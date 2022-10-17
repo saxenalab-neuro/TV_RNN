@@ -3,7 +3,8 @@
 This repo is about the work of Time Varying Recurrent Neural Networks (TV RNNs) with its analysis. Preprint available at:
 
 # Installation for Development
-
+1. Kernel: Pytorch 1.8.1
+2. Link to SHAP value installation: https://github.com/slundberg/shap
 # Details
 
 1. timevarying.py: TV RNN algorithm
