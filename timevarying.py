@@ -16,16 +16,15 @@ class Model(nn.Module):
     self.num_tv=num_tv
     self.rnns = nn.ModuleList([nn.RNN(input_size=self.input_shape, hidden_size=64, num_layers=1, batch_first=True) for i in range(num_tv)])
     self.fcs = nn.ModuleList([nn.Linear(64,1) for i in range(self.num_tv)])
-    self.model_last=model_last
     with torch.no_grad():
         for n in range(num_tv):
-            self.rnns[n].weight_hh_l0.copy_(self.model_last.rnn.weight_hh_l0)
-            self.rnns[n].weight_ih_l0.copy_(self.model_last.rnn.weight_ih_l0)
-            self.rnns[n].bias_hh_l0.copy_(self.model_last.rnn.bias_hh_l0)
-            self.rnns[n].bias_ih_l0.copy_(self.model_last.rnn.bias_ih_l0)
+            self.rnns[n].weight_hh_l0.copy_(model_last.rnn.weight_hh_l0)
+            self.rnns[n].weight_ih_l0.copy_(model_last.rnn.weight_ih_l0)
+            self.rnns[n].bias_hh_l0.copy_(model_last.rnn.bias_hh_l0)
+            self.rnns[n].bias_ih_l0.copy_(model_last.rnn.bias_ih_l0)
             
-            self.fcs[n].weight.copy_(self.model_last.fc.weight)
-            self.fcs[n].bias.copy_(self.model_last.fc.bias)
+            self.fcs[n].weight.copy_(model_last.fc.weight)
+            self.fcs[n].bias.copy_(model_last.fc.bias)
           
   def forward(self, x,h_,t_ind):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -61,7 +60,7 @@ def rnn_model(lr,n_epochs,batch_size,t_ind_ini,num_tv,X_train,y_train,X_test,y_t
   batches_test = int(X_test.shape[0])
   h_initial_test = np.zeros([1,batches_test, 64]) 
   input_s=X_train.shape[2]
-  model = Model(input_s,num_tv,model_last).cuda()
+  model = Model(input_s,num_tv,model_last).to(device)
   criterion = nn.BCELoss()
   optimizer = torch.optim.Adam(model.parameters(),lr=lr)
   loss_dy_each=np.zeros(n_epochs)
