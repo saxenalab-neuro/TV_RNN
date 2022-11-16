@@ -2,7 +2,8 @@ import numpy as np
 import decoding
 
 
-def seperate_output(y):
+def separate_output(y):
+  # This function is to separate the trials according to their final prediction, not necessary to use during training# 
   y_0=[]
   y_1=[]
   for i in range(y.shape[0]):
@@ -28,12 +29,12 @@ def weights_analysis(model_tv):
       o_fold.append(model_tv.fcs[w].weight.cpu().detach().numpy())
       o_b_fold.append(model_tv.fcs[w].bias.cpu().detach().numpy())
 
-  hh_fold=np.array(hh_fold)
-  ih_fold=np.array(ih_fold)
-  hh_b_fold=np.array(hh_b_fold)
-  ih_b_fold=np.array(ih_b_fold)
-  o_fold=np.array(o_fold)
-  o_b_fold=np.array(o_b_fold)
+  hh_fold=np.array(hh_fold) ##### get all recurrent weights ####
+  ih_fold=np.array(ih_fold) ##### get all input weights ####
+  hh_b_fold=np.array(hh_b_fold) ##### get all recurrent bias ####
+  ih_b_fold=np.array(ih_b_fold) ##### get all input bias ####
+  o_fold=np.array(o_fold) ##### get all output weights ####
+  o_b_fold=np.array(o_b_fold) ##### get all output bias ####
 
 
   ed_hh=np.ones((num_tv,num_tv))
@@ -56,10 +57,10 @@ def weights_analysis(model_tv):
           lbih=ih_b_fold[l]
           lwo=o_fold[l]
           lbo=o_b_fold[l]
-          ed_hh[h,l]=np.linalg.norm(lwhh-whh)
-          ed_ih[h,l]=np.linalg.norm(lwih-wih)
-          ed_hh_b[h,l]=np.linalg.norm(lbhh-bhh)
-          ed_ih_b[h,l]=np.linalg.norm(lbih-bih)
-          ed_o[h,l]=np.linalg.norm(lwo-wo)
-          ed_o_b[h,l]=np.linalg.norm(lbo-bo)
+          ed_hh[h,l]=np.linalg.norm(lwhh-whh)        ################################
+          ed_ih[h,l]=np.linalg.norm(lwih-wih)        ################################
+          ed_hh_b[h,l]=np.linalg.norm(lbhh-bhh)      #compute the Euclidean Distance#
+          ed_ih_b[h,l]=np.linalg.norm(lbih-bih)      ################################
+          ed_o[h,l]=np.linalg.norm(lwo-wo)           ################################
+          ed_o_b[h,l]=np.linalg.norm(lbo-bo)         ################################
   return ed_hh,ed_ih,ed_hh_b,ed_ih_b,ed_o,ed_o_b
