@@ -26,11 +26,7 @@ class Model(nn.Module):
         super(Model, self).__init__()
         self.rnn = nn.RNN(input_size=input_shape, hidden_size=64, num_layers=1, batch_first=True)
         self.fc = nn.Linear(64,1)
-        # torch.nn.init.xavier_uniform_(self.rnn.weight_hh_l0)
-        # torch.nn.init.xavier_uniform_(self.rnn.weight_ih_l0)
-        # torch.nn.init.xavier_uniform(self.rnn.bias_hh_l0)
-        # torch.nn.init.xavier_uniform(self.rnn.bias_ih_l0)
-        self.rnn.weight_hh_l0.data.fill_(0)
+        self.rnn.weight_hh_l0.data.fill_(0)  # initialization of weights and bias #
         self.rnn.weight_ih_l0.data.fill_(0)
         self.rnn.bias_hh_l0.data.fill_(0)
         self.rnn.bias_ih_l0.data.fill_(0)
@@ -158,7 +154,6 @@ def rnn_model(lr,epochs,batch_size,X_train,y_train,X_test,y_test,using_all,out_a
       loss_all[epoch]=loss_print
 
   y_a,x_save = model(X_train)
-  # print(y_a.shape)
   if out_all==True:
     accuracy=np.ones(y_a.shape[1])
     for h in range(y_a.shape[1]):
@@ -185,10 +180,6 @@ def run_svm(X_t_train,X_t_test,y_t_train,y_t_test,n_C,kernel):
   y_pre=clf.predict(X_t_test_reshape)
   val=accuracy_score(y_pre,y_t_test)
     
-  # lda = LinearDiscriminantAnalysis()
-  # lda.fit(X_t_train_reshape,y_t_train)
-  # acc_lda=lda.score(X_t_train_reshape,y_t_train)
-  # val_lda=lda.score(X_t_test_reshape,y_t_test)
 
   return acc,val
-  # ,acc_lda,val_lda
+
