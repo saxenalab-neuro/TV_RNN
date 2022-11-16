@@ -58,6 +58,7 @@ for train_index, test_index in kf.split(data_input):
     vi_s=vi_s+1
     X_t_train, X_t_test = data_input[train_index], data_input[test_index] 
     y_t_train, y_t_test = data_label[train_index], data_label[test_index]
+    ###### run RNN-S2 ######
     model_en,acc_en_all,val_en_all,loss_en_all,en_accuracy,en_val_accuracy,en_output_train,en_output_test=decoding.rnn_model(lr,
                                                                         en_epochs,
                                                                         batch_size,
@@ -69,6 +70,7 @@ for train_index, test_index in kf.split(data_input):
                                                                         out_all=True,
                                                                         verbose=True,
                                                                         device=device)
+    ###### run RNN-S1 ######
     model_last,acc_all,val_all,loss_all,accuracy,val_accuracy,output_train,output_test=decoding.rnn_model(lr,
                                                                         epochs,
                                                                         batch_size,
@@ -80,6 +82,7 @@ for train_index, test_index in kf.split(data_input):
                                                                         out_all=True,
                                                                         verbose=True,
                                                                         device=device)
+    ###### run TV RNN ######
     model_tv,acc_all_temp,val_acc_all_temp,loss_dy_each,loss_val,tv_output_train,tv_output_test=timevarying.rnn_model(lr_tv,
                                                                                    epochs_tv,
                                                                                    batch_size_tv,
