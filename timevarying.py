@@ -14,11 +14,11 @@ class Model(nn.Module):
     super(Model, self).__init__()
     self.input_shape=input_shape
     self.num_tv=num_tv
-    self.rnns = nn.ModuleList([nn.RNN(input_size=self.input_shape, hidden_size=64, num_layers=1, batch_first=True) for i in range(num_tv)])
+    self.rnns = nn.ModuleList([nn.RNN(input_size=self.input_shape, hidden_size=64, num_layers=1, batch_first=True) for i in range(num_tv)]) # generate TV RNNs #
     self.fcs = nn.ModuleList([nn.Linear(64,1) for i in range(self.num_tv)])
     with torch.no_grad():
         for n in range(num_tv):
-            self.rnns[n].weight_hh_l0.copy_(model_last.rnn.weight_hh_l0)
+            self.rnns[n].weight_hh_l0.copy_(model_last.rnn.weight_hh_l0) # initilize the TV RNN weights with the RNN-S1 weights #
             self.rnns[n].weight_ih_l0.copy_(model_last.rnn.weight_ih_l0)
             self.rnns[n].bias_hh_l0.copy_(model_last.rnn.bias_hh_l0)
             self.rnns[n].bias_ih_l0.copy_(model_last.rnn.bias_ih_l0)
@@ -30,7 +30,7 @@ class Model(nn.Module):
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     dtype = torch.float32
     h0=torch.tensor(h_,device=device,dtype=dtype)
-    for i, l in enumerate(self.rnns):
+    for i, l in enumerate(self.rnns): # feed TV RNNs #
         if i==0:
             (globals()[f"x{i}"], globals()[f"h_save{i}"]) = self.rnns[i](x[:,t_ind[i]:t_ind[i+1],:],h0)
         else:
