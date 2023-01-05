@@ -9,7 +9,7 @@ import torch.optim as optim
 from torch.autograd import Variable
 import decoding
 
-class Model(nn.Module):
+class Model(nn.Module): # build TV-RNN
   def __init__(self,input_shape,num_tv,model_last):
     super(Model, self).__init__()
     self.input_shape=input_shape
@@ -48,7 +48,7 @@ class Model(nn.Module):
     y=torch.sigmoid(y)
     return y,x_save,h_save
 
-def rnn_model(lr,n_epochs,batch_size,t_ind_ini,num_tv,X_train,y_train,X_test,y_test,model_last,verbose,device):
+def rnn_model(lr,n_epochs,batch_size,t_ind_ini,num_tv,X_train,y_train,X_test,y_test,model_last,verbose,device): # train TV-RNNs
   dataset_train = torch.utils.data.TensorDataset(X_train,y_train)
   train_loader = torch.utils.data.DataLoader(
                                               dataset_train,
