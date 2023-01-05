@@ -1,6 +1,6 @@
 # TV_RNN
 
-This repo is about the work of Time Varying Recurrent Neural Networks (TV RNNs) with its analysis. Preprint available at:
+This repo is about the work of Time Varying Recurrent Neural Networks (TV RNNs) with its analysis. Preprint available at: https://openreview.net/forum?id=0SD-uuvShZx
 
 # Installation for Development
 1. Kernel: Pytorch 1.8.1 (used for doing this experiment, not required)
