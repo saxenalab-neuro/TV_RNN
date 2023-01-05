@@ -33,6 +33,10 @@ def start_train(lr,
         vi_s=vi_s+1
         X_t_train, X_t_test = data_input[train_index], data_input[test_index] 
         y_t_train, y_t_test = data_label[train_index], data_label[test_index]
+        torch.save(X_t_train, path+'X_t_train_'+str(vi_s)+'.pt')
+        torch.save(X_t_test, path+'X_t_test_'+str(vi_s)+'.pt')
+        torch.save(y_t_train, path+'y_t_train_'+str(vi_s)+'.pt')
+        torch.save(y_t_test, path+'y_t_test_'+str(vi_s)+'.pt')
         ###### run RNN-S2 ######
         if s2==True:
             model_en,acc_en_all,val_en_all,loss_en_all,en_accuracy,en_val_accuracy,en_output_train,en_output_test=decoding.rnn_model(lr,
