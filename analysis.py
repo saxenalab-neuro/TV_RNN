@@ -25,7 +25,7 @@ def weights_analysis(model_tv):
   ih_b=[]
   o=[]
   o_b=[]
-  for w in range(num_tv):    
+  for w in range(num_tv): # store all the weights   
       hh.append(model_tv.rnns[w].weight_hh_l0.cpu().detach().numpy())
       ih.append(model_tv.rnns[w].weight_ih_l0.cpu().detach().numpy())
       hh_b.append(model_tv.rnns[w].bias_hh_l0.cpu().detach().numpy())
@@ -69,7 +69,7 @@ def weights_analysis(model_tv):
           ed_o_b[h,l]=np.linalg.norm(lbo-bo)         ################################
   return ed_hh,ed_ih,ed_hh_b,ed_ih_b,ed_o,ed_o_b
 
-def auac(X,time):
+def auac(X,time): #compute area under accuracy curve and above the chance level
     area=0
     for i in range(1,len(X)):
         if X[i]<=0.5:
@@ -77,7 +77,7 @@ def auac(X,time):
         elif X[i-1]<0.5 and X[i]>0.5:
             area_plus=0
         else:
-            area_plus=(X[i-1]+X[i]-1)*(time/len(X))*0.5
+            area_plus=(X[i-1]+X[i]-1)*(time/len(X))*0.5 #calculate the area between two points above chance level
         area=area+area_plus
     return area
 def get_early(scores_all,min_t,max_t): # do multiple t test correction of the p-value at time from -9.5 to -0.5.    
@@ -90,11 +90,11 @@ def get_early(scores_all,min_t,max_t): # do multiple t test correction of the p-
         n=scores_all.shape[0]
         t=(a-(0.5))/b
         df=n-1
-        p = (1 - stats.t.cdf(t,df=df))
+        p = (1 - stats.t.cdf(t,df=df)) # compuute p-value of t-test
         y_p[i]=p
-    _,y_np,_,_=statsmodels.stats.multitest.multipletests(y_p, alpha=0.05, method='fdr_bh', is_sorted=False, returnsorted=False) #multiple t-test
+    _,y_np,_,_=statsmodels.stats.multitest.multipletests(y_p, alpha=0.05, method='fdr_bh', is_sorted=False, returnsorted=False) # multiple t-test
     early=max_t
-    for i in range(len(y_np)):
+    for i in range(len(y_np)): # compute the earliest decoding time, after which the p-value must be smaller than 0.05.
         if i==int(len(y_np)-1):
             early=min_t
             break
