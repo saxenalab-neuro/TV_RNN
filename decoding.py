@@ -21,7 +21,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 
-class Model(nn.Module):
+class Model(nn.Module): # build model
     def __init__(self,input_shape):
         super(Model, self).__init__()
         self.rnn = nn.RNN(input_size=input_shape, hidden_size=64, num_layers=1, batch_first=True)
@@ -42,7 +42,7 @@ class Model(nn.Module):
     
         return x,x_save
 
-def _get_accuracy(y_true, y_prob):
+def _get_accuracy(y_true, y_prob): # compute classification accuracy
     assert y_true.ndim == 1 and y_true.size() == y_prob.size()
     y_prob = y_prob > 0.5
     return (y_true == y_prob).sum().item() / y_true.size(0)
@@ -77,35 +77,7 @@ def data_processing_no_normal(data_behavior,data_control):
 
   return X,y
 
-def do_pca(n_components,data_behavior,data_control):
-    X=np.concatenate((data_behavior,data_control),axis=0)
-    pca=PCA(n_components=n_components)
-    X=X.transpose((0,2,1))
-    X_reshape=X.reshape(X.shape[0]*X.shape[1],-1)
-    X_reshape_pca=pca.fit_transform(X_reshape)
-    ex=pca.explained_variance_ratio_
-    X_pca=X_reshape_pca.reshape(X.shape[0],X.shape[1],-1)
-    X_t=X_pca.transpose((0,2,1))
-    data_behavior_pca=X_t[:data_behavior.shape[0]]
-    data_control_pca=X_t[data_behavior.shape[0]:]
-    return data_behavior_pca,data_control_pca,ex
-
-def do_nmf(n_components,data_behavior,data_control):
-    X=np.concatenate((data_behavior,data_control),axis=0)
-    if np.min(X)<0:
-      X=X-np.min(X)
-    nmf=NMF(n_components=n_components)
-    X=X.transpose((0,2,1))
-    X_reshape=X.reshape(X.shape[0]*X.shape[1],-1)
-    X_reshape_nmf=nmf.fit_transform(X_reshape)
-    ex=nmf.reconstruction_err_
-    X_nmf=X_reshape_nmf.reshape(X.shape[0],X.shape[1],-1)
-    X_t=X_nmf.transpose((0,2,1))
-    data_behavior_pca=X_t[:data_behavior.shape[0]]
-    data_control_pca=X_t[data_behavior.shape[0]:]
-    return data_behavior_pca,data_control_pca,ex
-
-def rnn_model(lr,epochs,batch_size,X_train,y_train,X_test,y_test,using_all,out_all,verbose,device):
+def rnn_model(lr,epochs,batch_size,X_train,y_train,X_test,y_test,using_all,out_all,verbose,device): # train rnn model
   dataset_train = torch.utils.data.TensorDataset(X_train,y_train)
   train_loader = torch.utils.data.DataLoader(
                                               dataset_train,
@@ -168,18 +140,4 @@ def rnn_model(lr,epochs,batch_size,X_train,y_train,X_test,y_test,using_all,out_a
   else:
     val_accuracy=_get_accuracy(y_test,y_v[:,-1,0])
   return model,acc_all,val_all,loss_all,accuracy,val_accuracy,y_a,y_v
-
-def run_svm(X_t_train,X_t_test,y_t_train,y_t_test,n_C,kernel):
-  clf=svm.SVC(kernel=kernel,C=n_C)
-  X_t_train_reshape=X_t_train.reshape(X_t_train.shape[0],-1)
-  X_t_test_reshape=X_t_test.reshape(X_t_test.shape[0],-1)
-  print(X_t_train_reshape.shape)
-  clf.fit(X_t_train_reshape,y_t_train)
-  y_predict=clf.predict(X_t_train_reshape)
-  acc=accuracy_score(y_predict,y_t_train)
-  y_pre=clf.predict(X_t_test_reshape)
-  val=accuracy_score(y_pre,y_t_test)
-    
-
-  return acc,val
 
