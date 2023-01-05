@@ -1,21 +1,11 @@
 import numpy as np
 import torch
-# import torch.optim as optim
-# from torch.autograd import Variable
-# import os
-# from numpy import *
-# import sklearn
-# import matplotlib.pyplot as plt
-# from sklearn.model_selection import KFold 
-# import pandas as pd
-# import seaborn as sns
-# from matplotlib.pyplot import MultipleLocator
 from torch import nn
 import shap
 
 
 
-class Model(nn.Module):
+class Model(nn.Module): # copy model to load
     def __init__(self,input_shape):
         super(Model, self).__init__()
         self.rnn = nn.RNN(input_size=input_shape, hidden_size=64, num_layers=1, batch_first=True)
@@ -38,19 +28,19 @@ def get_shap_ori(state,X_train,X_test):
     input_shape=X_train.shape[2]
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = Model(input_shape).to(device)
-    model.load_state_dict(state)
+    model.load_state_dict(state) # load model
     background1 = X_train[:100]
     background2 = X_train[-100:]
     background = torch.cat((background1,background2),axis=0)
     test_images = X_test
 
     e = shap.GradientExplainer(model, background)
-    shap_values = e.shap_values(test_images)
+    shap_values = e.shap_values(test_images) # compute shap value via GradientExplainer
 
     return shap_values
 
 
-class Model_tv(nn.Module):
+class Model_tv(nn.Module): # copy model to load
   def __init__(self,input_shape,num_tv):
     super(Model_tv, self).__init__()
     self.input_shape=input_shape
@@ -89,14 +79,14 @@ def get_shap(state,X_train,X_test,num_tv):
     input_shape=X_train.shape[2]
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model_tv = Model_tv(input_shape,num_tv).to(device)
-    model_tv.load_state_dict(state)
+    model_tv.load_state_dict(state) # load model
     background1 = X_train[:100]
     background2 = X_train[-100:]
     background = torch.cat((background1,background2),axis=0)
     test_images = X_test
 
     e = shap.GradientExplainer(model_tv, background)
-    shap_values = e.shap_values(test_images)
+    shap_values = e.shap_values(test_images) # compute shap value via GradientExplainer
     return shap_values
 
 
