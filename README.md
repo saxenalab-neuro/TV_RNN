@@ -12,12 +12,14 @@ This repo is about the work of Time Varying Recurrent Neural Networks (TV RNNs) 
 conda env create --file environment_tvrnn.yml
 conda activate tv-rnn
 ```
-3. ```python demo.py``` (example running) 
-4. or open demo.ipynb
+3. If environment is not built successfully, do 'pip install'+all missed packages, they are common packages in this experiment. 
+4. ```python demo.py``` (example running) 
+5. or open demo.ipynb
 
 # Details
 1. timevarying.py: TV RNN algorithm
 2. decoding.py: Decoding algorithm
 3. analysis.py: Weights analysis
 4. shaping.py: SHAP value computing
-5. demo.ipynb: Demo notebook
+5. training.py: Training process
+6. demo.ipynb: Demo notebook
